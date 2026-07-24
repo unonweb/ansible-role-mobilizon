@@ -25,3 +25,4 @@
     dest: "{{ mobilizon_dir_config }}/config.exs"
     owner: mobilizon
     group: mobilizon
+    mode: u=rw,g=,o=
