@@ -53,7 +53,7 @@
   become: true
   become_user: postgres
   community.postgresql.postgresql_ext:
-    db: "{{ mobilizon_db_name }}"
+    login_db: "{{ mobilizon_db_name }}"
     name: "{{ item }}"
   loop:
   - postgis
