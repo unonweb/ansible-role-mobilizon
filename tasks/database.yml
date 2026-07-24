@@ -48,8 +48,9 @@
     db: "{{ mobilizon_db_name }}"
     name: "{{ mobilizon_db_user }}"
     password: "{{ mobilizon_db_user_pw }}"
-  notify: systemctl restart postgresql.service
-  notify: systemctl restart mobilizon.service
+  notify: 
+  - systemctl restart postgresql.service
+  - systemctl restart mobilizon.service
 
 # create extensions
 # Add or remove PostgreSQL extensions from a database
