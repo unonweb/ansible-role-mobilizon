@@ -14,7 +14,7 @@
 
 # reset overrides
 - when: mobilizon_service_overrides_reset == true 
-  name: Reset systemd system unit overrides {{ mobilizon_systemd_reset }}
+  name: Reset overrides for mobilizon.service
   become: true
   ansible.builtin.file:
     path: /etc/systemd/system/mobilizon.service.d
@@ -50,7 +50,7 @@
 # state
 - name: Set state of mobilizon.service (state={{ mobilizon_service_state }}, enabled={{ mobilizon_service_enabled }})
   become: true
-  loop: "{{ mobilizon_systemd_enable }}"
+  loop: "{{ mobilizon_service_enabled }}"
   ansible.builtin.systemd_service:
     scope: system
     name: "mobilizon.service"
