@@ -3,7 +3,7 @@
 - name: Assertions
   ansible.builtin.assert:
     that:
-    - mobilizon_web_server_domain != None
+    - mobilizon_config_domain != None
 
 # template
 - name: Template mobilizon.service

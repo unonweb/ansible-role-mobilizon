@@ -3,8 +3,8 @@
 - name: Assertions
   ansible.builtin.assert:
     that:
-    - mobilizon_web_admin_mail != None
-    - mobilizon_web_server_domain != None
+    - mobilizon_config_mail_to != None
+    - mobilizon_config_domain != None
 
 # mkdir certbot
 # Let's Encrypt keeps its files here
@@ -24,8 +24,8 @@
     certbot certonly 
     --rsa-key-size 4096 
     --webroot -w /var/www/certbot/ 
-    --email {{ mobilizon_web_admin_mail }} 
+    --email {{ mobilizon_config_mail_to }} 
     --agree-tos 
     --text 
     --renew-hook "/usr/sbin/nginx -s reload" 
-    -d {{ mobilizon_web_server_domain }}
+    -d {{ mobilizon_config_domain }}
