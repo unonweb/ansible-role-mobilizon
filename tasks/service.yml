@@ -50,7 +50,6 @@
 # state
 - name: Set state of mobilizon.service (state={{ mobilizon_service_state }}, enabled={{ mobilizon_service_enabled }})
   become: true
-  loop: "{{ mobilizon_service_enabled }}"
   ansible.builtin.systemd_service:
     scope: system
     name: "mobilizon.service"
