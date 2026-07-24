@@ -1,0 +1,27 @@
+---
+# assert
+- name: Assertions for mariadb role
+  ansible.builtin.assert:
+    that:
+    - mobilizon_config_domain != None
+    - mobilizon_config_mail_to != None
+    - mobilizon_config_mail_server != None
+    - mobilizon_config_mail_hostname != None
+    - mobilizon_config_mail_port != None
+    - mobilizon_config_mail_username != None
+    - mobilizon_config_mail_password != None
+
+# create secrets
+# instead of running ./bin/mobilizon_ctl instance gen...
+- name: Create secret_key_base and secret_key with a random password
+  set_fact:
+    __mobilizon_config_secret_key_base: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=64') }}"
+    __mobilizon_config_secret_key: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=64') }}"
+
+# template
+- name: Template config file config.exs.j2
+  ansible.builtin.template:
+    src: config.exs.j2
+    dest: "{{ mobilizon_dir_config }}/config.exs"
+    owner: mobilizon
+    group: mobilizon

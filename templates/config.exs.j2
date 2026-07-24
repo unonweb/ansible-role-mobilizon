@@ -1,0 +1,52 @@
+# Mobilizon instance configuration
+
+import Config
+
+config :mobilizon, Mobilizon.Web.Endpoint,
+   server: true,
+   url: [host: "{{ mobilizon_config_domain }}"],
+   http: [
+     ip: {127,0,0,1},
+     port: 4000
+    ],
+   secret_key_base: "{{ __mobilizon_config_secret_key_base }}"
+
+config :mobilizon, Mobilizon.Web.Auth.Guardian,
+  secret_key: "{{ __mobilizon_config_secret_key }}"
+
+config :mobilizon, :instance,
+  name: "{{ mobilizon_config_instance_name }}",
+  description: "{{ mobilizon_config_description }}",
+  hostname: "{{ mobilizon_config_domain }}",
+  registrations_open: false,
+  demo: false,
+  allow_relay: true,
+  federating: true,
+  email_from: "{{ mobilizon_config_mail_from }}",
+  email_reply_to: "{{ mobilizon_config_mail_to }}"
+
+config :mobilizon, Mobilizon.Storage.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "mobilizon",
+  password: "{{ mobilizon_db_user_pw }}",
+  database: "mobilizon_prod",
+  hostname: "localhost",
+  port: "5432",
+  pool_size: 10
+
+config :mobilizon, Mobilizon.Web.Email.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "{{ mobilizon_config_mail_server }}",
+  hostname: "{{ mobilizon_config_mail_hostname }}",
+  # usually 25, 465 or 587
+  port: {{ mobilizon_config_mail_port }},
+  username: "{{ mobilizon_config_mail_username }}",
+  password: "{{ mobilizon_config_mail_password }}",
+  # can be `:always` or `:never`
+  tls: :if_available,
+  allowed_tls_versions: [:tlsv1, :"tlsv1.1", :"tlsv1.2"],
+  retries: 1,
+  # can be `true`
+  no_mx_lookups: false,
+  # can be `:always`. If your smtp relay requires authentication set it to `:always`.
+  auth: :if_available

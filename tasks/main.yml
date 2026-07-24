@@ -7,6 +7,9 @@
   # install
   - ansible.builtin.import_tasks: install.yml
 
+  # config
+  - ansible.builtin.import_tasks: config.yml
+
   # database
   - ansible.builtin.import_tasks: database.yml
 
