@@ -40,7 +40,7 @@
   become: true
   become_user: postgres
   community.postgresql.postgresql_user:
-    db: "{{ mobilizon_db_name }}"
+    login_db: "{{ mobilizon_db_name }}" # database to connect to and where user’s permissions are granted
     name: "{{ mobilizon_db_user }}"
     password: "{{ mobilizon_db_user_pw }}"
   notify: 
@@ -62,7 +62,8 @@
   notify: systemctl restart postgresql.service
 
 # db migration
-- name: Database Migration has to be done again after most updates
+- when: false
+  name: Database Migration has to be done again after most updates
   become: true
   become_user: mobilizon
   ansible.builtin.shell: "{{ mobilizon_dir_app }}/bin/mobilizon_ctl migrate"
