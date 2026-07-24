@@ -1,0 +1,24 @@
+---
+# assert
+- name: Assertions
+  ansible.builtin.assert:
+    that:
+    - mobilizon_web_admin_mail != None
+    - mobilizon_web_server_domain != None
+
+# mkdir certbot
+# Let's Encrypt keeps its files here
+- name: Mkdir /var/www/certbot
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: /var/www/certbot
+    owner: root
+    group: root
+    mode: u=rwx,g=,o=
+
+# certbot
+- name: Run certbot
+  become: true
+  when:
+  ansible.builtin.command: "certbot certonly --rsa-key-size 4096 --webroot -w /var/www/certbot/ --email {{ mobilizon_web_admin_mail }} --agree-tos --text --renew-hook "/usr/sbin/nginx -s reload" -d {{ mobilizon_web_server_domain }}"

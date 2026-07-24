@@ -1,0 +1,90 @@
+---
+# install
+- name: Install required packages
+  become: true
+  ansible.builtin.apt:
+    state: present
+    install_recommends: false
+    name:
+    - curl
+    - tar
+    - nginx
+    - certbot
+    - imagemagick
+    - file
+    # optional
+    - gifsicle
+    - jpegoptim
+    - optipng
+    - pngquant
+
+# create user
+- name: Create system user mobilizon
+  become: true
+  ansible.builtin.user:
+    create_home: true
+    home: "{{ mobilizon_dir_app }}"
+    system: true
+    shell: /bin/false
+    password_lock: true
+    name: mobilizon
+
+# mkdir config
+- name: Mkdir {{ mobilizon_dir_config }}
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ mobilizon_dir_config }}"
+    owner: mobilizon
+    group: mobilizon
+    mode: u=rwx,g=rx,o=rx
+
+# mkdir upload
+- name: Mkdir {{ mobilizon_dir_upload }}
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ mobilizon_dir_upload }}"
+    owner: mobilizon
+    group: mobilizon
+    mode: u=rwx,g=rx,o=rx
+
+# mkdir csv exports
+- name: Mkdir {{ mobilizon_dir_upload }}/exports/csv
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ mobilizon_dir_upload }}exports/csv"
+    owner: mobilizon
+    group: mobilizon
+    mode: u=rwx,g=rx,o=rx
+
+# mkdir data
+- name: Mkdir {{ mobilizon_dir_data }}
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ mobilizon_dir_data }}"
+    owner: mobilizon
+    group: mobilizon
+    mode: u=rwx,g=rx,o=rx
+
+# install from url
+- when: mobilizon_install_opt_from == "url"
+  block:
+
+  # assertions
+  - name: Assertions
+    ansible.builtin.assert:
+      that:
+      - mobilizon_install_opt_url != None
+
+  - name: Install from url to {{ mobilizon_dir_app }}
+    become: true
+    ansible.builtin.unarchive:
+      src: "{{ mobilizon_install_opt_url }}"
+      dest: "{{ mobilizon_dir_app | dirname }}"
+      remote_src: true
+      owner: mobilizon
+      group: mobilizon
+      mode: u=rwx,g=rx,o=rx

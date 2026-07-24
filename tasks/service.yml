@@ -1,0 +1,59 @@
+---
+# https://docs.joinmobilizon.org/administration/install/release/#services
+
+# template
+- name: Template mobilizon.service
+  become: true
+  ansible.builtin.template:
+    src: "{{ mobilizon_service_template }}"
+    dest: /etc/systemd/system/mobilizon.service
+    remote_src: true
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: systemctl daemon-reload
+
+# reset overrides
+- when: mobilizon_service_overrides_reset == true 
+  name: Reset systemd system unit overrides {{ mobilizon_systemd_reset }}
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/mobilizon.service.d
+    state: absent
+
+# overrides
+- when: mobilizon_service_overrides | length > 0
+  block:
+
+  # mkdir overrides
+  - name: Mkdir in /etc/systemd/system/...
+    become: true
+    ansible.builtin.file:
+      path: /etc/systemd/system/mobilizon.service.d
+      state: directory
+      owner: root
+      group: root
+      mode: u=rwx,g=rx,o=rx
+
+  # cp overrides
+  - name: Copy systemd system unit overrides {{ mobilizon_service_overrides }}
+    become: true
+    notify: systemctl daemon-reload
+    loop: "{{ mobilizon_service_overrides }}"
+    ansible.builtin.copy:
+      src: "{{ role_path }}/files/{{ item }}"
+      dest: "/etc/systemd/system/mobilizon.service.d/{{ item }}"
+      force: true
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+
+# state
+- name: Set state of mobilizon.service (state={{ mobilizon_service_state }}, enabled={{ mobilizon_service_enabled }})
+  become: true
+  loop: "{{ mobilizon_systemd_enable }}"
+  ansible.builtin.systemd_service:
+    scope: system
+    name: "mobilizon.service"
+    state: "{{ mobilizon_service_state }}"
+    enabled: "{{ mobilizon_service_enabled }}"

@@ -1,0 +1,35 @@
+---
+# INSTALL
+# =======
+mobilizon_install_opt_from: url
+mobilizon_install_opt_url: https://packages.mobilizon.org/latest-package
+
+# DIRS
+# ====
+mobilizon_dir_app: /opt/mobilizon
+mobilizon_dir_config: /etc/mobilizon
+mobilizon_dir_upload: /var/lib/mobilizon/uploads
+mobilizon_dir_data: /var/lib/mobilizon/data
+
+# DB
+# ==
+mobilizon_db_name: mobilizon_prod
+mobilizon_db_user: mobilizon
+mobilizon_db_user_pw: 
+
+# SERVICE
+# =======
+mobilizon_service_template: systemd-mobilizon-release.service.j2
+mobilizon_service_overrides_reset: false
+mobilizon_service_overrides: []
+mobilizon_service_state: started
+mobilizon_service_enabled: true
+
+# WEB
+# ===
+mobilizon_web_server_domain: 
+mobilizon_web_admin_mail:
+
+# NGINX
+# =====
+mobilizon_nginx_template: nginx-mobilizon-release.conf.j2

@@ -1,0 +1,27 @@
+---
+# assert
+- name: Assertions
+  ansible.builtin.assert:
+    that:
+    - mobilizon_web_server_domain != None
+
+# template
+- name: Template mobilizon.service
+  become: true
+  ansible.builtin.template:
+    src: "{{ mobilizon_nginx_template }}"
+    dest: /etc/nginx/sites-available/mobilizon.conf
+    remote_src: true
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: systemctl reload nginx
+
+# link
+- name: Create link at /etc/nginx/sites-enabled/mobilizon.conf
+  become: true
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/mobilizon.conf
+    dest: /etc/nginx/sites-enabled/mobilizon.conf
+    state: link
+  notify: systemctl reload nginx

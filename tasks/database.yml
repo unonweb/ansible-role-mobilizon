@@ -1,0 +1,74 @@
+---
+# assert
+- name: Assertions
+  ansible.builtin.assert:
+    that:
+    - mobilizon_db_user_pw != None
+
+# install
+- name: Install postgresql packages
+  become: true
+  ansible.builtin.apt:
+    state: present
+    install_recommends: false
+    name:
+    - postgresql
+    - postgresql-contrib
+
+# install
+# adds geospatial capabilities to PostgreSQL
+- name: Install postgis with recommends
+  become: true
+  ansible.builtin.apt:
+    state: present
+    install_recommends: true
+    name:
+    - postgis
+
+# pip
+# https://docs.ansible.com/ansible/latest/collections/community/postgresql
+- name: Pip install psycopg2-binary
+  ansible.builtin.pip:
+    state: present
+    name: psycopg2-binary
+
+# create db
+- name: Create database {{ mobilizon_db_name }}
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ mobilizon_db_name }}"
+  notify: systemctl restart postgresql.service
+
+# create db user
+- name: Create database user {{ mobilizon_db_user }}
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    db: "{{ mobilizon_db_name }}"
+    name: "{{ mobilizon_db_user }}"
+    password: "{{ mobilizon_db_user_pw }}"
+  notify: systemctl restart postgresql.service
+  notify: systemctl restart mobilizon.service
+
+# create extensions
+# Add or remove PostgreSQL extensions from a database
+- name: Add extensions to database {{ mobilizon_db_name }}
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_ext:
+    db: "{{ mobilizon_db_name }}"
+    name: "{{ item }}"
+  loop:
+  - postgis
+  - pg_trgm
+  - unaccent
+  notify: systemctl restart postgresql.service
+
+# db migration
+- name: Database Migration has to be done again after most updates
+  become: true
+  become_user: mobilizon
+  ansible.builtin.shell: "{{ mobilizon_dir_app }}/bin/mobilizon_ctl migrate"
+  ignore_errors: true
+  notify: systemctl restart postgresql.service
