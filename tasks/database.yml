@@ -6,7 +6,7 @@
     - mobilizon_db_user_pw != None
 
 # install
-- name: Install postgresql packages
+- name: Install required packages
   become: true
   ansible.builtin.apt:
     state: present
@@ -14,6 +14,8 @@
     name:
     - postgresql
     - postgresql-contrib
+    - python3-psycopg2
+    - sudo # required for user switching
 
 # install
 # adds geospatial capabilities to PostgreSQL
@@ -24,13 +26,6 @@
     install_recommends: true
     name:
     - postgis
-
-# pip
-# https://docs.ansible.com/ansible/latest/collections/community/postgresql
-- name: Pip install psycopg2-binary
-  ansible.builtin.pip:
-    state: present
-    name: psycopg2-binary
 
 # create db
 - name: Create database {{ mobilizon_db_name }}
