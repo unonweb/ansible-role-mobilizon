@@ -11,6 +11,19 @@ mobilizon_dir_config: /etc/mobilizon
 mobilizon_dir_upload: /var/lib/mobilizon/uploads
 mobilizon_dir_data: /var/lib/mobilizon/data
 
+# CONFIG
+# ======
+mobilizon_config_domain:
+mobilizon_config_description: "Mobilizon instance on {{ inventory_hostname }}"
+mobilizon_config_instance_name: "{{ inventory_hostname }}"
+mobilizon_config_mail_from: "{{ inventory_hostname }}"
+mobilizon_config_mail_to:
+mobilizon_config_mail_server:
+mobilizon_config_mail_hostname:
+mobilizon_config_mail_port: 25
+mobilizon_config_mail_username:
+mobilizon_config_mail_password:
+
 # DB
 # ==
 mobilizon_db_name: mobilizon_prod
@@ -24,11 +37,6 @@ mobilizon_service_overrides_reset: false
 mobilizon_service_overrides: []
 mobilizon_service_state: started
 mobilizon_service_enabled: true
-
-# WEB
-# ===
-mobilizon_web_server_domain: 
-mobilizon_web_admin_mail:
 
 # NGINX
 # =====
