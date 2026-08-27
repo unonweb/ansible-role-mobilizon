@@ -6,7 +6,7 @@ config :mobilizon, Mobilizon.Web.Endpoint,
    server: true,
    url: [host: "{{ mobilizon_config_domain }}"],
    http: [
-     ip: {127,0,0,1},
+     ip: {0,0,0,0},
      port: 4000
     ],
    secret_key_base: "{{ __mobilizon_config_secret_key_base }}"
