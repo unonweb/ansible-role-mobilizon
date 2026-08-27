@@ -1,0 +1,77 @@
+---
+- tags: [mobilizon-database, mobilizon-db]
+  block:
+
+  # assert
+  - name: Assertions
+    ansible.builtin.assert:
+      that:
+      - mobilizon_db_user_pw != None
+
+  # install
+  - name: Install required packages
+    become: true
+    ansible.builtin.apt:
+      state: present
+      install_recommends: false
+      name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+      - sudo # required for user switching
+      - libpq-dev
+
+  # install
+  # adds geospatial capabilities to PostgreSQL
+  - name: Install postgis with recommends
+    become: true
+    ansible.builtin.apt:
+      state: present
+      install_recommends: true
+      name:
+      - postgis
+
+  # create db user
+  - name: Create database user {{ mobilizon_db_user }}
+    become: true
+    become_user: postgres
+    community.postgresql.postgresql_user:
+      name: "{{ mobilizon_db_user }}"
+      password: "{{ mobilizon_db_user_pw }}"
+      #login_db: "{{ mobilizon_db_name }}" # database to connect to and where user’s permissions are granted
+    notify: 
+    - systemctl reload postgresql.service
+    - systemctl reload mobilizon.service
+
+  # create db
+  - name: Create database {{ mobilizon_db_name }}
+    become: true
+    become_user: postgres
+    community.postgresql.postgresql_db:
+      name: "{{ mobilizon_db_name }}"
+      login_user: postgres
+      owner: "{{ mobilizon_db_user }}"
+    notify: systemctl reload postgresql.service
+
+  # create extensions
+  # Add or remove PostgreSQL extensions from a database
+  - name: Add extensions to database {{ mobilizon_db_name }}
+    become: true
+    become_user: postgres
+    community.postgresql.postgresql_ext:
+      login_db: "{{ mobilizon_db_name }}"
+      name: "{{ item }}"
+    loop:
+    - postgis
+    - pg_trgm
+    - unaccent
+    notify: systemctl reload postgresql.service
+
+  # db migration
+  - when: false
+    name: Database Migration has to be done again after most updates
+    become: true
+    become_user: mobilizon
+    ansible.builtin.shell: "{{ mobilizon_dir_app }}/bin/mobilizon_ctl migrate"
+    ignore_errors: true
+    notify: systemctl reload postgresql.service

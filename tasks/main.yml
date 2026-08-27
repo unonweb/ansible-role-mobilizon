@@ -5,19 +5,19 @@
   block:
 
   # install
-  - ansible.builtin.import_tasks: install.yml
+  - ansible.builtin.import_tasks: mobilizon-install.yml
 
   # config
-  - ansible.builtin.import_tasks: config.yml
+  - ansible.builtin.import_tasks: mobilizon-config.yml
 
   # database
-  - ansible.builtin.import_tasks: database.yml
+  - ansible.builtin.import_tasks: mobilizon-database.yml
 
   # service
-  - ansible.builtin.import_tasks: service.yml
-
-  # certbot
-  - ansible.builtin.import_tasks: certbot.yml
+  - ansible.builtin.import_tasks: mobilizon-service.yml
   
   # nginx
-  - ansible.builtin.import_tasks: nginx.yml
+  - ansible.builtin.import_tasks: mobilizon-nginx.yml
+
+  # certbot
+  # - ansible.builtin.import_tasks: mobilizon-certbot-nginx.yml
