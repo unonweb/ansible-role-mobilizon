@@ -1,19 +1,30 @@
 ---
+# nginx
 - name: systemctl reload nginx
+  when: mobilizon_nginx_reload == true
+  delegate_to: "{{ mobilizon_nginx_host }}"
   ansible.builtin.systemd_service:
     name: nginx.service
     state: reloaded
 
+# postgresql
 - name: systemctl restart postgresql.service
   ansible.builtin.systemd_service:
     name: postgresql.service
     state: restarted
 
+- name: systemctl reload postgresql.service
+  ansible.builtin.systemd_service:
+    name: postgresql.service
+    state: reloaded
+
+# mobilizon
 - name: systemctl restart mobilizon.service
   ansible.builtin.systemd_service:
     name: mobilizon.service
     state: restarted
 
+# daemon
 - name: systemctl daemon-reload
   ansible.builtin.systemd_service:
     daemon_reload: true

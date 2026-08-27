@@ -14,6 +14,7 @@ mobilizon_dir_data: /var/lib/mobilizon/data
 # CONFIG
 # ======
 mobilizon_config_domain:
+mobilizon_config_ip: "{{ ansible_host }}"
 mobilizon_config_description: "Mobilizon instance on {{ inventory_hostname }}"
 mobilizon_config_instance_name: "{{ inventory_hostname }}"
 mobilizon_config_mail_from: "{{ inventory_hostname }}"
@@ -40,4 +41,9 @@ mobilizon_service_enabled: true
 
 # NGINX
 # =====
-mobilizon_nginx_template: nginx-mobilizon-release.conf.j2
+mobilizon_nginx_host: "{{ inventory_hostname }}"
+mobilizon_nginx_install: true
+mobilizon_nginx_template: nginx-mobilizon.conf.j2
+mobilizon_nginx_reload: false
+mobilizon_nginx_ssl_pub:
+mobilizon_nginx_ssl_key:
