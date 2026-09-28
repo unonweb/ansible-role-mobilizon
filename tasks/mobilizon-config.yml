@@ -14,6 +14,8 @@
       - mobilizon_config_mail_password != None
       - mobilizon_config_secret_key_base != None
       - mobilizon_config_secret_key != None
+      - mobilizon_config_domain != None
+      quiet: true
 
   # template
   - name: Template config file config.exs.j2
