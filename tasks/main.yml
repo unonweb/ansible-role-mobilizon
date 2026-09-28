@@ -1,7 +1,6 @@
 ---
 - name: mobilizon role
-  tags:
-    - mobilizon
+  tags: [role-mobilizon]
   block:
 
   # install
@@ -10,14 +9,5 @@
   # config
   - ansible.builtin.import_tasks: mobilizon-config.yml
 
-  # database
-  - ansible.builtin.import_tasks: mobilizon-database.yml
-
   # service
   - ansible.builtin.import_tasks: mobilizon-service.yml
-  
-  # nginx
-  - ansible.builtin.import_tasks: mobilizon-nginx.yml
-
-  # certbot
-  # - ansible.builtin.import_tasks: mobilizon-certbot-nginx.yml
