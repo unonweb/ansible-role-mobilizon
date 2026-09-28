@@ -12,13 +12,8 @@
       - mobilizon_config_mail_port != None
       - mobilizon_config_mail_username != None
       - mobilizon_config_mail_password != None
-
-  # create secrets
-  # instead of running ./bin/mobilizon_ctl instance gen...
-  - name: Create secret_key_base and secret_key with a random password
-    set_fact:
-      __mobilizon_config_secret_key_base: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=64') }}"
-      __mobilizon_config_secret_key: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=64') }}"
+      - mobilizon_config_secret_key_base != None
+      - mobilizon_config_secret_key != None
 
   # template
   - name: Template config file config.exs.j2

@@ -9,10 +9,10 @@ config :mobilizon, Mobilizon.Web.Endpoint,
      ip: {0,0,0,0},
      port: 4000
     ],
-   secret_key_base: "{{ __mobilizon_config_secret_key_base }}"
+   secret_key_base: "{{ mobilizon_config_secret_key_base }}"
 
 config :mobilizon, Mobilizon.Web.Auth.Guardian,
-  secret_key: "{{ __mobilizon_config_secret_key }}"
+  secret_key: "{{ mobilizon_config_secret_key }}"
 
 config :mobilizon, :instance,
   name: "{{ mobilizon_config_instance_name }}",

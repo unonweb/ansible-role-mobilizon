@@ -15,6 +15,8 @@ mobilizon_dir_data: /var/lib/mobilizon/data
 # ======
 mobilizon_config_description: "Mobilizon instance on {{ inventory_hostname }}"
 mobilizon_config_instance_name: "{{ inventory_hostname }}"
+mobilizon_config_secret_key_base:
+mobilizon_config_secret_key:
 mobilizon_config_mail_from: "{{ inventory_hostname }}"
 mobilizon_config_mail_to:
 mobilizon_config_mail_server:
