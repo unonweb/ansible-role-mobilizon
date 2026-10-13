@@ -9,7 +9,7 @@ mobilizon_install_opt_url: https://packages.mobilizon.org/latest-package
 mobilizon_dir_app: /opt/mobilizon
 mobilizon_dir_config: /etc/mobilizon
 mobilizon_dir_upload: /var/lib/mobilizon/uploads
-mobilizon_dir_data: /var/lib/mobilizon/data
+mobilizon_dir_data: /var/lib/mobilizon/data # not used
 
 # CONFIG
 # ======
@@ -21,7 +21,6 @@ mobilizon_config_secret_key:
 mobilizon_config_mail_from: "{{ inventory_hostname }}"
 mobilizon_config_mail_to:
 mobilizon_config_mail_server:
-mobilizon_config_mail_hostname:
 mobilizon_config_mail_port: 25
 mobilizon_config_mail_username:
 mobilizon_config_mail_password:
