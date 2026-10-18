@@ -10,7 +10,7 @@ config :mobilizon, Mobilizon.Web.Endpoint,
     ],
     http: [
         ip: {0,0,0,0},
-        port: 4000
+        port: {{ mobilizon_config_port }}
 	],
    	http_security: [
     	enabled: true
@@ -34,9 +34,9 @@ config :mobilizon, :instance,
 
 config :mobilizon, Mobilizon.Storage.Repo,
 	adapter: Ecto.Adapters.Postgres,
-	username: "mobilizon",
+	username: "{{ mobilizon_db_user }}",
 	password: "{{ mobilizon_db_user_pw }}",
-	database: "mobilizon_prod",
+	database: "{{ mobilizon_db_name }}",
 	hostname: "localhost",
 	port: "5432",
 	pool_size: 10

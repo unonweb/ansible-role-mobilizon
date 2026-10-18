@@ -9,5 +9,10 @@
   # config
   - ansible.builtin.import_tasks: mobilizon-config.yml
 
-  # service
-  - ansible.builtin.import_tasks: mobilizon-service.yml
+  # systemd_unit
+  - name: Configure systemd units
+    ansible.builtin.include_tasks: mobilizon-systemd-unit.yml
+    loop: "{{ mobilizon_systemd_units }}"
+    loop_control:
+      loop_var: item
+      label: "{{ item.name }}"

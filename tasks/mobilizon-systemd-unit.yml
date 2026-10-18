@@ -1,0 +1,128 @@
+---
+- tags: [role-mobilizon-systemd-unit]
+  vars:
+    __mobilizon_systemd_unit_name: "{{ item.name | splitext | first }}"
+    __mobilizon_systemd_unit_name_with_ext: "{{ __mobilizon_systemd_unit_name }}.{{ item.type | default('service') }}"
+    __mobilizon_systemd_unit_dir: "{{ '/home/' + mobilizon_user + '/.config/systemd/user' if item.scope is defined and item.scope == 'user' else '/etc/systemd/system' }}"
+    __mobilizon_systemd_unit_path: "{{ __mobilizon_systemd_unit_dir }}/{{ __mobilizon_systemd_unit_name }}.{{ item.type | default('service') }}"
+  block:
+
+  # assert
+  - name: Assertions for mobilizon-systemd-unit
+    ansible.builtin.assert:
+      that:
+      - __mobilizon_systemd_unit_name != None and __mobilizon_systemd_unit_name | length > 0
+      - __mobilizon_systemd_unit_path != None and __mobilizon_systemd_unit_path | length > 0
+      - mobilizon_dir_config | length > 0
+      - mobilizon_dir_app | length > 0
+      - mobilizon_user | length > 0
+      - mobilizon_config_description | length > 0
+
+  # mkdir user units
+  - name: Mkdir {{ __mobilizon_systemd_unit_dir }}
+    when: (item.scope is defined) and (item.scope == 'user')
+    become: true
+    ansible.builtin.file:
+      state: directory
+      mode: u=rwx,g=,o=rx
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
+      path: "{{ __mobilizon_systemd_unit_dir }}"
+
+  # template unit from vars
+  - name: Template unit from vars to {{ __mobilizon_systemd_unit_path }}
+    when: (item.config is defined) and (item.template is not defined)
+    become: true
+    ansible.builtin.template:
+      src: systemd/systemd-unit.j2
+      dest: "{{ __mobilizon_systemd_unit_path }}"
+      owner: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+      group: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+      mode: '0644'
+    register: __mobilizon_systemd_unit_file
+
+  # template unit from file
+  - name: Template unit from file to {{ __mobilizon_systemd_unit_path }}
+    when: (item.template is defined) and (item.config is not defined)
+    become: true
+    ansible.builtin.template:
+      src: "{{ item.template }}"
+      dest: "{{ __mobilizon_systemd_unit_path }}"
+      owner: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+      group: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+      mode: '0644'
+    register: __mobilizon_systemd_unit_file
+
+  # template overrides
+  - when: item.overrides is defined
+    block:
+
+    # mkdir
+    - name: Mkdir overrides {{ __mobilizon_systemd_unit_path }}.d # splitext | first removes file extension
+      become: true
+      ansible.builtin.file:
+        path: "{{ __mobilizon_systemd_unit_path }}.d"
+        state: directory
+        owner: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+        group: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+        mode: u=rwx,g=,o=rx
+
+    # template override
+    - name: Template override {{ __mobilizon_systemd_unit_path }}.d/ansible-overrides.conf
+      become: true
+      ansible.builtin.template:
+        src: systemd/systemd-unit-overrides.j2
+        dest: "{{ __mobilizon_systemd_unit_path }}.d/ansible-overrides.conf"
+        owner: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+        group: "{{ mobilizon_user if item.scope is defined and item.scope == 'user' else 'root' }}"
+        mode: '0644'
+      register: __systemd_unit_override
+
+  # systemctl daemon-reload
+  - name: Reload systemd daemon if units changed
+    when: (__mobilizon_systemd_unit_file is defined and __mobilizon_systemd_unit_file is changed) or (__systemd_unit_override is defined and __systemd_unit_override is changed)
+    block:
+
+    # --user
+    - name: Reload systemd user daemon if unit has changed
+      when: (item.scope is defined) and (item.scope == 'user')
+      become: true
+      become_user: "{{ mobilizon_user }}"
+      failed_when: false
+      ansible.builtin.systemd_service:
+        scope: user
+        daemon_reload: true
+
+    # --system
+    - name: Reload systemd system daemon if unit has changed
+      when: (item.scope is not defined) or (item.scope == 'system')
+      become: true
+      ansible.builtin.systemd_service:
+        scope: system
+        daemon_reload: true
+
+  # unit state
+  - when: (item.state is defined) or (item.enabled is defined)
+    block:
+
+    # --user
+    - name: Manage state of {{ __mobilizon_systemd_unit_name }}
+      when: (item.scope is defined) and (item.scope == 'user')
+      become: true
+      become_user: "{{ mobilizon_user }}"
+      failed_when: false
+      ansible.builtin.systemd_service:
+        scope: user
+        name: "{{ __mobilizon_systemd_unit_name_with_ext }}"
+        state: "{{ item.state | default('started') }}"
+        enabled: "{{ item.enabled | default(true) }}"
+
+    # --system
+    - name: Manage state of {{ __mobilizon_systemd_unit_name }}
+      when: (item.scope is not defined) or (item.scope == 'system')
+      become: true
+      ansible.builtin.systemd_service:
+        scope: system
+        name: "{{ __mobilizon_systemd_unit_name_with_ext }}"
+        state: "{{ item.state | default('started') }}"
+        enabled: "{{ item.enabled | default(true) }}"
