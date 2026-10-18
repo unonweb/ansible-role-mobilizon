@@ -6,12 +6,9 @@
   - name: Assertions for mobilizon-install
     ansible.builtin.assert:
       that:
-      - mobilizon_user | length > 0
-      - mobilizon_dir_app | length > 0
-      - mobilizon_dir_config | length > 0
-      - mobilizon_dir_upload | length > 0
-      - mobilizon_dir_data | length > 0
-      - mobilizon_install_opt_from | length > 0
+      - mobilizon_user != ""
+      - mobilizon_dir_app != ""
+      - mobilizon_install_opt_from != ""
       quiet: true
 
   # install
@@ -42,61 +39,31 @@
       password_lock: true
       name: "{{ mobilizon_user }}"
 
-  # mkdir config
-  - name: Mkdir {{ mobilizon_dir_config }}
+  # mkdir app
+  - name: Mkdir {{ mobilizon_dir_app }}
     become: true
     ansible.builtin.file:
       state: directory
-      path: "{{ mobilizon_dir_config }}"
+      path: "{{ mobilizon_dir_app }}"
       owner: "{{ mobilizon_user }}"
       group: "{{ mobilizon_user }}"
-      mode: u=rwx,g=rx,o=rx
-
-  # mkdir upload
-  - name: Mkdir {{ mobilizon_dir_upload }}
-    become: true
-    ansible.builtin.file:
-      state: directory
-      path: "{{ mobilizon_dir_upload }}"
-      owner: "{{ mobilizon_user }}"
-      group: "{{ mobilizon_user }}"
-      mode: u=rwx,g=rx,o=rx
-
-  # mkdir csv exports
-  - name: Mkdir {{ mobilizon_dir_upload }}/exports/csv
-    become: true
-    ansible.builtin.file:
-      state: directory
-      path: "{{ mobilizon_dir_upload }}exports/csv"
-      owner: "{{ mobilizon_user }}"
-      group: "{{ mobilizon_user }}"
-      mode: u=rwx,g=rx,o=rx
-
-  # mkdir data
-  - name: Mkdir {{ mobilizon_dir_data }}
-    become: true
-    ansible.builtin.file:
-      state: directory
-      path: "{{ mobilizon_dir_data }}"
-      owner: "{{ mobilizon_user }}"
-      group: "{{ mobilizon_user }}"
-      mode: u=rwx,g=rx,o=rx
+      mode: u=rwx,g=,o=
 
   # install from url
   - when: mobilizon_install_opt_from == "url"
     block:
 
     # assertions
-    - name: Assertions
+    - name: Assertions for mobilizon-install
       ansible.builtin.assert:
         that:
-        - mobilizon_install_opt_url | length > 0
+        - mobilizon_install_opt_url != ""
 
     - name: Install from url to {{ mobilizon_dir_app }}
       become: true
       ansible.builtin.unarchive:
         src: "{{ mobilizon_install_opt_url }}"
-        dest: "{{ mobilizon_dir_app | dirname }}"
+        dest: "{{ mobilizon_dir_app }}"
         remote_src: true
         owner: "{{ mobilizon_user }}"
         group: "{{ mobilizon_user }}"

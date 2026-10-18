@@ -6,19 +6,62 @@
   - name: Assertions for mobilizon-config
     ansible.builtin.assert:
       that:
-      - mobilizon_db_user | length > 0
-      - mobilizon_db_user_pw | length > 0
-      - mobilizon_db_name | length > 0
-      - mobilizon_config_mail_to | length > 0
-      - mobilizon_config_mail_server | length > 0
-      - mobilizon_config_mail_hostname | length > 0
+      - mobilizon_db_user != ""
+      - mobilizon_db_user_pw != ""
+      - mobilizon_db_name != ""
+      - mobilizon_dir_config != ""
+      - mobilizon_dir_upload != ""
+      - mobilizon_dir_data != ""
+      - mobilizon_config_mail_to != ""
+      - mobilizon_config_mail_server != ""
+      - mobilizon_config_mail_hostname != ""
       - mobilizon_config_mail_port != None
-      - mobilizon_config_mail_username | length > 0
-      - mobilizon_config_mail_password | length > 0
-      - mobilizon_config_secret_key_base | length > 0
-      - mobilizon_config_secret_key | length > 0
-      - mobilizon_config_domain | length > 0
+      - mobilizon_config_mail_username != ""
+      - mobilizon_config_mail_password != ""
+      - mobilizon_config_secret_key_base != ""
+      - mobilizon_config_secret_key != ""
+      - mobilizon_config_domain != ""
       quiet: true
+
+# mkdir config
+  - name: Mkdir {{ mobilizon_dir_config }}
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ mobilizon_dir_config }}"
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
+      mode: u=rwx,g=,o=
+
+  # mkdir upload
+  - name: Mkdir {{ mobilizon_dir_upload }}
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ mobilizon_dir_upload }}"
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
+      mode: u=rwx,g=,o=
+
+  # mkdir csv exports
+  - name: Mkdir {{ mobilizon_dir_upload }}/exports/csv
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ mobilizon_dir_upload }}exports/csv"
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
+      mode: u=rwx,g=,o=
+
+  # mkdir data
+  - name: Mkdir {{ mobilizon_dir_data }}
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ mobilizon_dir_data }}"
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
+      mode: u=rwx,g=,o=
 
   # template
   - name: Template config file config.exs.j2

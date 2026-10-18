@@ -13,10 +13,10 @@
       that:
       - __mobilizon_systemd_unit_name != None and __mobilizon_systemd_unit_name | length > 0
       - __mobilizon_systemd_unit_path != None and __mobilizon_systemd_unit_path | length > 0
-      - mobilizon_dir_config | length > 0
-      - mobilizon_dir_app | length > 0
-      - mobilizon_user | length > 0
-      - mobilizon_config_description | length > 0
+      - mobilizon_dir_config != ""
+      - mobilizon_dir_app != ""
+      - mobilizon_user != ""
+      - mobilizon_config_description != ""
 
   # mkdir user units
   - name: Mkdir {{ __mobilizon_systemd_unit_dir }}
@@ -118,7 +118,7 @@
         enabled: "{{ item.enabled | default(true) }}"
 
     # --system
-    - name: Manage state of {{ __mobilizon_systemd_unit_name }}
+    - name: Manage state of {{ __mobilizon_systemd_unit_name_with_ext }}
       when: (item.scope is not defined) or (item.scope == 'system')
       become: true
       ansible.builtin.systemd_service:
