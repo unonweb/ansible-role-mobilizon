@@ -11,7 +11,7 @@ ExecStop={{ mobilizon_dir_app }}/bin/mobilizon stop
 KillMode=process
 Restart=on-failure
 Environment=MIX_ENV=prod
-Environment=MOBILIZON_CONFIG_PATH={{ mobilizon_dir_config }}
+Environment=MOBILIZON_CONFIG_PATH={{ mobilizon_dir_config }}/config.exs
 SyslogIdentifier=mobilizon
 
 # Use private /tmp and /var/tmp folders inside a new file system namespace, which are discarded after the process stops
