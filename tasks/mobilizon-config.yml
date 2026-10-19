@@ -23,7 +23,7 @@
       - mobilizon_config_domain != ""
       quiet: true
 
-# mkdir config
+  # mkdir config
   - name: Mkdir {{ mobilizon_dir_config }}
     become: true
     ansible.builtin.file:
@@ -68,6 +68,6 @@
     ansible.builtin.template:
       src: config.exs.j2
       dest: "{{ mobilizon_dir_config }}/config.exs"
-      owner: mobilizon
-      group: mobilizon
+      owner: "{{ mobilizon_user }}"
+      group: "{{ mobilizon_user }}"
       mode: u=rw,g=,o=
