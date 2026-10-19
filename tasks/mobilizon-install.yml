@@ -38,6 +38,7 @@
       shell: /bin/false
       password_lock: true
       name: "{{ mobilizon_user }}"
+      group: mobilizon
 
   # mkdir app
   - name: Mkdir {{ mobilizon_dir_app }}
@@ -68,3 +69,5 @@
         owner: "{{ mobilizon_user }}"
         group: "{{ mobilizon_user }}"
         mode: u=rwx,g=rx,o=rx
+        extra_opts:
+        - "--strip-components=1" # make sure that no surplus directory 'mobilizon' is created
