@@ -5,15 +5,15 @@ import Config
 config :mobilizon, Mobilizon.Web.Endpoint,
     server: true,
     url: [
-        host: "{{ mobilizon_config_domain }}"
+        host: "{{ mobilizon_config_domain }}",
         scheme: "https"
-    ],
+	],
     http: [
         ip: {0,0,0,0},
         port: {{ mobilizon_config_port }}
 	],
-   	http_security: [
-    	enabled: true
+	http_security: [
+		enabled: true
     ],
 	secret_key_base: "{{ mobilizon_config_secret_key_base }}",
 	has_reverse_proxy: true
