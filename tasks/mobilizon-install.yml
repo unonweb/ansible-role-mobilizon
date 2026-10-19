@@ -28,6 +28,14 @@
       - optipng
       - pngquant
 
+  # create linux group
+  - name: Create system group 'mobilizon'
+    become: true
+    ansible.builtin.group:
+      name: mobilizon
+      state: present
+      system: true
+
   # create linux user
   - name: Create system user {{ mobilizon_user }}
     become: true
