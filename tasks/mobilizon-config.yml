@@ -53,7 +53,7 @@
       group: "{{ mobilizon_user }}"
       mode: u=rwx,g=,o=
 
-  # mkdir data
+  # mkdir instance data
   - name: Mkdir {{ mobilizon_dir_data }}
     become: true
     ansible.builtin.file:
@@ -62,6 +62,16 @@
       owner: "{{ mobilizon_user }}"
       group: "{{ mobilizon_user }}"
       mode: u=rwx,g=,o=
+
+  # mkdir global data
+  - name: Mkdir /var/lib/mobilizon
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: /var/lib/mobilizon
+      owner: root
+      group: mobilizon
+      mode: u=rwx,g=rwx,o=
 
   # template
   - name: Template config file config.exs.j2
