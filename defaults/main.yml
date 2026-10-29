@@ -4,6 +4,7 @@
 mobilizon_user: mobilizon
 mobilizon_install_opt_from: url
 mobilizon_install_opt_url: https://packages.mobilizon.org/latest-package
+# https://packages.mobilizon.org/5.2.4/
 
 # DIRS
 # ====
