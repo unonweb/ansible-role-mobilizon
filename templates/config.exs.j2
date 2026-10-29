@@ -29,7 +29,7 @@ config :mobilizon, :instance,
 	demo: false,
 	allow_relay: false,
 	federating: false,
-	email_from: "{{ mobilizon_config_domain }}",
+	email_from: "{{ mobilizon_config_mail_username }}",
 	email_reply_to: "{{ mobilizon_config_mail_username }}"
 
 config :mobilizon, Mobilizon.Storage.Repo,
