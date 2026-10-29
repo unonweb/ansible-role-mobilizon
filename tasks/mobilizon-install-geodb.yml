@@ -1,0 +1,17 @@
+---
+- name: Download and decompress DB-IP database file
+  ansible.builtin.get_url:
+    url: "https://download.db-ip.com/free/dbip-city-lite-2026-10.mmdb.gz"
+    dest: "/tmp/GeoLite2-City.mmdb"
+    decompress: true
+    mode: '0644'
+
+- name: Ensure geo directory exists and deploy database file
+  ansible.builtin.copy:
+    src: "/tmp/GeoLite2-City.mmdb"
+    dest: "/var/lib/mobilizon/geo/GeoLite2-City.mmdb"
+    remote_src: true
+    owner: mobilizon
+    group: mobilizon
+    mode: '0644'
+  become: true
