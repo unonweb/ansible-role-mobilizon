@@ -68,7 +68,7 @@
         that:
         - mobilizon_install_opt_url != ""
 
-    - name: Install from url to {{ mobilizon_dir_app }}
+    - name: Install {{ mobilizon_install_opt_url }} to {{ mobilizon_dir_app }}
       become: true
       ansible.builtin.unarchive:
         src: "{{ mobilizon_install_opt_url }}"
