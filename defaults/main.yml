@@ -4,7 +4,7 @@
 mobilizon_user: mobilizon
 mobilizon_install_opt_from: url
 mobilizon_install_opt_url: https://packages.mobilizon.org/latest-package
-# https://packages.mobilizon.org/5.2.4/
+# https://packages.mobilizon.org/5.2.4/mobilizon_5.2.4_debian-bookworm_amd64.tar.gz
 
 # DIRS
 # ====
